@@ -1,0 +1,302 @@
+{
+  "info": {
+    "name": "Students",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get Dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/dashboard", "host": ["{{baseUrl}}"], "path": ["students", "dashboard"] }
+      }
+    },
+    {
+      "name": "Get Purchased Series",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/purchases", "host": ["{{baseUrl}}"], "path": ["students", "purchases"] }
+      }
+    },
+    {
+      "name": "Purchase Series",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/purchases/:testSeriesId", "host": ["{{baseUrl}}"], "path": ["students", "purchases", ":testSeriesId"], "variable": [ { "key": "testSeriesId", "value": "" } ] }
+      }
+    },
+    {
+      "name": "Get Test History",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/history?page=1&pageSize=20", "host": ["{{baseUrl}}"], "path": ["students", "history"], "query": [ { "key": "page", "value": "1" }, { "key": "pageSize", "value": "20" } ] }
+      }
+    },
+    {
+      "name": "Submit Objective Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"answers\": [\n    { \"questionIndex\": 0, \"answer\": \"A\" },\n    { \"questionIndex\": 1, \"answer\": \"B\" },\n    { \"questionIndex\": 2, \"answer\": \"C\" }\n  ]\n}"
+        },
+        "url": { 
+          "raw": "{{baseUrl}}/students/tests/:testSeriesId/:testId/objective-submission", 
+          "host": ["{{baseUrl}}"], 
+          "path": ["students", "tests", ":testSeriesId", ":testId", "objective-submission"],
+          "variable": [
+            { "key": "testSeriesId", "value": "{{testSeriesId}}" },
+            { "key": "testId", "value": "{{testId}}" }
+          ]
+        },
+        "description": "Submit answers for an objective test. The test is automatically evaluated and results are immediately available. Returns score, submission ID, and completion status."
+      }
+    },
+    {
+      "name": "Submit Subjective Test",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "answerSheet",
+              "type": "file",
+              "src": []
+            }
+          ]
+        },
+        "url": { 
+          "raw": "{{baseUrl}}/students/tests/:testSeriesId/:testId/subjective-submission", 
+          "host": ["{{baseUrl}}"], 
+          "path": ["students", "tests", ":testSeriesId", ":testId", "subjective-submission"],
+          "variable": [
+            { "key": "testSeriesId", "value": "{{testSeriesId}}" },
+            { "key": "testId", "value": "{{testId}}" }
+          ]
+        },
+        "description": "Submit answer sheet PDF for a subjective test. Requires manual evaluation by an evaluator."
+      }
+    },
+    {
+      "name": "Get Submission Details",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { 
+          "raw": "{{baseUrl}}/students/submissions/:submissionId", 
+          "host": ["{{baseUrl}}"], 
+          "path": ["students", "submissions", ":submissionId"], 
+          "variable": [ 
+            { 
+              "key": "submissionId", 
+              "value": "{{submissionId}}", 
+              "description": "The ID of the submission to get details for" 
+            } 
+          ] 
+        },
+        "description": "Get detailed information about a specific submission for review/analysis. Includes test details, evaluation results, files, and question-wise analysis for objective tests."
+      }
+    },
+    {
+      "name": "Submit Feedback for Evaluator",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent evaluation with detailed feedback. Very helpful for understanding my mistakes.\"\n}"
+        },
+        "url": { 
+          "raw": "{{baseUrl}}/students/submissions/:submissionId/feedback", 
+          "host": ["{{baseUrl}}"], 
+          "path": ["students", "submissions", ":submissionId", "feedback"], 
+          "variable": [ 
+            { 
+              "key": "submissionId", 
+              "value": "{{submissionId}}", 
+              "description": "The ID of the submission to give feedback for" 
+            } 
+          ] 
+        },
+        "description": "Submit rating and feedback for an evaluator after test evaluation is completed. Rating must be 1-5 stars."
+      }
+    },
+    {
+      "name": "Get Analytics",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/analytics", "host": ["{{baseUrl}}"], "path": ["students", "analytics"] },
+        "description": "Get student analytics including performance data by subject and rankings (All India, State, City ranks with percentiles)"
+      }
+    },
+    {
+      "name": "Get My Profile",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/profile", "host": ["{{baseUrl}}"], "path": ["students", "profile"] },
+        "description": "Get current student's profile information including stats"
+      }
+    },
+    {
+      "name": "Update My Profile",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Updated Name\",\n  \"mobile\": \"+91-9876543210\",\n  \"phone\": \"+91-9876543210\",\n  \"address\": \"123 Main St, City, State\",\n  \"dob\": \"1995-06-15\",\n  \"experience\": \"2 years in accounting\",\n  \"bio\": \"Aspiring CA with passion for financial analysis\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/students/profile", "host": ["{{baseUrl}}"], "path": ["students", "profile"] },
+        "description": "Update student profile information"
+      }
+    },
+    {
+      "name": "Upload Profile Picture",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "profilePicture",
+              "type": "file",
+              "src": [],
+              "description": "Profile picture image file (will be automatically compressed to <300KB)"
+            }
+          ]
+        },
+        "url": { "raw": "{{baseUrl}}/students/profile/picture", "host": ["{{baseUrl}}"], "path": ["students", "profile", "picture"] },
+        "description": "Upload and update student profile picture. Image is automatically compressed to under 300KB."
+      }
+    },
+    {
+      "name": "Get Unattempted Tests",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { 
+          "raw": "{{baseUrl}}/students/unattempted?page=1&pageSize=20", 
+          "host": ["{{baseUrl}}"], 
+          "path": ["students", "unattempted"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "20" }
+          ]
+        },
+        "description": "Get list of tests that the student has purchased but not yet attempted"
+      }
+    },
+    {
+      "name": "Get Test Statuses",
+      "request": {
+        "method": "GET", 
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/students/tests/:testSeriesId/statuses",
+          "host": ["{{baseUrl}}"],
+          "path": ["students", "tests", ":testSeriesId", "statuses"],
+          "variable": [
+            { "key": "testSeriesId", "value": "{{testSeriesId}}" }
+          ]
+        },
+        "description": "Get status of all tests in a test series (not_attempted, submitted, completed)"
+      }
+    },
+    {
+      "name": "Get Test Detail",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/students/tests/:testSeriesId/:testId",
+          "host": ["{{baseUrl}}"],
+          "path": ["students", "tests", ":testSeriesId", ":testId"], 
+          "variable": [
+            { "key": "testSeriesId", "value": "{{testSeriesId}}" },
+            { "key": "testId", "value": "{{testId}}" }
+          ]
+        },
+        "description": "Get test details for attempting. For objective tests, returns questions without correct answers. For subjective tests, returns question paper URL."
+      }
+    },
+    {
+      "name": "Get Suggested Answer",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/students/tests/:testSeriesId/:testId/suggested-answer",
+          "host": ["{{baseUrl}}"],
+          "path": ["students", "tests", ":testSeriesId", ":testId", "suggested-answer"],
+          "variable": [
+            { "key": "testSeriesId", "value": "{{testSeriesId}}" },
+            { "key": "testId", "value": "{{testId}}" }
+          ]
+        },
+        "description": "Get the suggested answer PDF URL for a test (if available)"
+      }
+    },
+    {
+      "name": "Is Profile Complete",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": { "raw": "{{baseUrl}}/students/profile-complete", "host": ["{{baseUrl}}"], "path": ["students", "profile-complete"] }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000/api" },
+    { "key": "token", "value": "" },
+    { "key": "testSeriesId", "value": "" },
+    { "key": "testId", "value": "" },
+    { "key": "submissionId", "value": "" }
+  ]
+}

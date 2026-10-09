@@ -1,0 +1,181 @@
+{
+  "info": {
+    "name": "Admin",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET /api/admin/dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/dashboard",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","dashboard"]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/analytics",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/analytics?period=30&startDate=&endDate=",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "admin", "analytics"],
+          "query": [
+            { "key": "period", "value": "30", "description": "Number of days to analyze (default: 30)" },
+            { "key": "startDate", "value": "", "description": "Start date for custom range (YYYY-MM-DD)" },
+            { "key": "endDate", "value": "", "description": "End date for custom range (YYYY-MM-DD)" }
+          ]
+        },
+        "description": "Get comprehensive analytics data including user growth, submission trends, subject performance, evaluator performance, revenue analytics, and performance metrics. Supports custom date ranges or period-based filtering."
+      }
+    },
+    {
+      "name": "GET /api/admin/students",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students?q=&purchased=all&status=all&page=1&pageSize=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "purchased", "value": "all" },
+            { "key": "status", "value": "all" },
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "20" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/students/:id",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/{{studentId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students","{{studentId}}"]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/students/:id/submissions",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/{{studentId}}/submissions?status=all&page=1&pageSize=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students","{{studentId}}","submissions"],
+          "query": [
+            { "key": "status", "value": "all" },
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "20" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "PATCH /api/admin/students/:id/status",
+      "request": {
+        "method": "PATCH",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/{{studentId}}/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students","{{studentId}}","status"]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/students/:id/notes",
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/{{studentId}}/notes",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students","{{studentId}}","notes"]
+        }
+      }
+    },
+    {
+      "name": "POST /api/admin/students/:id/notes",
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Authorization", "value": "Bearer {{token}}" }, { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"note\": \"Followed up on payment.\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/{{studentId}}/notes",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students","{{studentId}}","notes"]
+        }
+      }
+    },
+    {
+      "name": "GET /api/admin/evaluations",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/evaluations?page=1&pageSize=20&status=all&subject=all&evaluatorId=&studentId=&sortBy=submittedAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "admin", "evaluations"],
+          "query": [
+            { "key": "page", "value": "1", "description": "Page number for pagination" },
+            { "key": "pageSize", "value": "20", "description": "Number of items per page" },
+            { "key": "status", "value": "all", "description": "Filter by status: all, pending, IN_PROGRESS, COMPLETED" },
+            { "key": "subject", "value": "all", "description": "Filter by subject: all, Accounts, Law, etc." },
+            { "key": "evaluatorId", "value": "", "description": "Filter by specific evaluator ID" },
+            { "key": "studentId", "value": "", "description": "Filter by specific student ID" },
+            { "key": "sortBy", "value": "submittedAt", "description": "Sort by: submittedAt, evaluatedAt, awardedMarks, status" },
+            { "key": "sortOrder", "value": "desc", "description": "Sort order: asc, desc" }
+          ]
+        },
+        "description": "Get all evaluations/submissions with detailed information including student, evaluator, test details, marks, and feedback. Includes summary statistics."
+      }
+    },
+    {
+      "name": "GET /api/admin/evaluator-feedbacks",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/evaluator-feedbacks?page=1&pageSize=20&rating=&evaluatorId=&sortBy=feedbackAt&sortOrder=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "admin", "evaluator-feedbacks"],
+          "query": [
+            { "key": "page", "value": "1", "description": "Page number for pagination" },
+            { "key": "pageSize", "value": "20", "description": "Number of items per page" },
+            { "key": "rating", "value": "", "description": "Filter by rating (1-5)" },
+            { "key": "evaluatorId", "value": "", "description": "Filter by specific evaluator ID" },
+            { "key": "sortBy", "value": "feedbackAt", "description": "Sort by: feedbackAt, rating, evaluatedAt" },
+            { "key": "sortOrder", "value": "desc", "description": "Sort order: asc, desc" }
+          ]
+        },
+        "description": "Get all feedback/ratings given by students to evaluators with filtering, sorting, and pagination. Includes summary statistics and rating distribution."
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "studentId", "value": "" }
+  ]
+}

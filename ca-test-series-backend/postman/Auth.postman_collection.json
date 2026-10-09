@@ -1,0 +1,31 @@
+{
+  "info": {
+    "_postman_id": "cahero-auth-collection",
+    "name": "CAHero Auth",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Authentication & verification endpoints."
+  },
+  "item": [
+    {
+      "name": "Signup (Student - default FOUNDATION)",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"fullName\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"secret123\"\n}"},"url":{"raw":"{{baseUrl}}/auth/signup","host":["{{baseUrl}}"],"path":["auth","signup"]}}
+    },
+    {
+      "name": "Signin",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"email\": \"test@example.com\",\n  \"password\": \"secret123\"\n}"},"url":{"raw":"{{baseUrl}}/auth/signin","host":["{{baseUrl}}"],"path":["auth","signin"]}}
+    },
+    {
+      "name": "Resend Verification",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"email\": \"test@example.com\"\n}"},"url":{"raw":"{{baseUrl}}/auth/resend-verification","host":["{{baseUrl}}"],"path":["auth","resend-verification"]}}
+    },
+    {
+      "name": "Forgot Password",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"email\": \"test@example.com\"\n}"},"url":{"raw":"{{baseUrl}}/auth/forgot-password","host":["{{baseUrl}}"],"path":["auth","forgot-password"]}}
+    },
+    {
+      "name": "Reset Password",
+      "request": {"method":"POST","header":[{"key":"Content-Type","value":"application/json"}],"body":{"mode":"raw","raw":"{\n  \"token\": \"<resetToken>\",\n  \"password\": \"newPass123\"\n}"},"url":{"raw":"{{baseUrl}}/auth/reset-password","host":["{{baseUrl}}"],"path":["auth","reset-password"]}}
+    }
+  ],
+  "variable": [ {"key":"baseUrl","value":"http://localhost:3000/api"} ]
+}

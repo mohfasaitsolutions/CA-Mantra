@@ -1,0 +1,305 @@
+{
+  "info": {
+    "name": "Contact API",
+    "description": "API endpoints for contact form submission and admin enquiry management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Public Contact API",
+      "item": [
+        {
+          "name": "Submit Contact Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"mobile\": \"9876543210\",\n  \"subject\": \"Inquiry about CA courses\",\n  \"message\": \"I would like to know more about your CA Foundation courses and their pricing.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "contact"]
+            },
+            "description": "Submit a contact form (public endpoint - no authentication required)"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"mobile\": \"9876543210\",\n  \"subject\": \"Inquiry about CA courses\",\n  \"message\": \"I would like to know more about your CA Foundation courses and their pricing.\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/contact",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "contact"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"message\": \"Thank you for contacting us! We will get back to you soon.\",\n  \"contactId\": \"60f5b8c7d1234567890abcdef\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Enquiry Management",
+      "item": [
+        {
+          "name": "Get All Enquiries",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries?status=all&priority=all&isResolved=all&search=&startDate=&endDate=&page=1&pageSize=10&sortBy=createdAt&sortOrder=desc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "all",
+                  "description": "Filter by status: all, NEW, IN_PROGRESS, RESPONDED, CLOSED"
+                },
+                {
+                  "key": "priority",
+                  "value": "all",
+                  "description": "Filter by priority: all, LOW, MEDIUM, HIGH, URGENT"
+                },
+                {
+                  "key": "isResolved",
+                  "value": "all",
+                  "description": "Filter by resolution: all, true, false"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Search in name, email, mobile, message, subject"
+                },
+                {
+                  "key": "startDate",
+                  "value": "",
+                  "description": "Start date filter (YYYY-MM-DD)"
+                },
+                {
+                  "key": "endDate",
+                  "value": "",
+                  "description": "End date filter (YYYY-MM-DD)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "description": "Items per page"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "createdAt",
+                  "description": "Sort field"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "desc",
+                  "description": "Sort order: asc, desc"
+                }
+              ]
+            },
+            "description": "Get all enquiries with filtering, pagination, and statistics"
+          }
+        },
+        {
+          "name": "Get Enquiry Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "60f5b8c7d1234567890abcdef",
+                  "description": "Enquiry ID"
+                }
+              ]
+            },
+            "description": "Get detailed information about a specific enquiry"
+          }
+        },
+        {
+          "name": "Respond to Enquiry",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Thank you for your inquiry about our CA Foundation courses. Our team will contact you within 24 hours with detailed information about course structure, pricing, and enrollment process.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries/:id/respond",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries", ":id", "respond"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "60f5b8c7d1234567890abcdef",
+                  "description": "Enquiry ID"
+                }
+              ]
+            },
+            "description": "Send a response to a customer enquiry"
+          }
+        },
+        {
+          "name": "Update Enquiry Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"priority\": \"HIGH\",\n  \"tags\": [\"course-inquiry\", \"foundation\", \"pricing\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "60f5b8c7d1234567890abcdef",
+                  "description": "Enquiry ID"
+                }
+              ]
+            },
+            "description": "Update enquiry status, priority, and tags"
+          }
+        },
+        {
+          "name": "Add Admin Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Customer is interested in Foundation course. Requires installment payment options. Follow up required after sending course details.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries/:id/notes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries", ":id", "notes"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "60f5b8c7d1234567890abcdef",
+                  "description": "Enquiry ID"
+                }
+              ]
+            },
+            "description": "Add an admin note to an enquiry for internal tracking"
+          }
+        },
+        {
+          "name": "Delete Enquiry",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/enquiries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "enquiries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "60f5b8c7d1234567890abcdef",
+                  "description": "Enquiry ID"
+                }
+              ]
+            },
+            "description": "Delete an enquiry (admin only)"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT token for authentication"
+    }
+  ]
+}

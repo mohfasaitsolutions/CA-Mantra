@@ -1,0 +1,18 @@
+# Production target
+# Host: ec2-13-201-166-25.ap-south-1.compute.amazonaws.com
+# Backend: /home/ubuntu/ca-test-series-backend (PM2 process: camantraa-api)
+# Frontend: /var/www/camantraa/dist
+
+# Connect
+ssh -i ~/Downloads/camantraaF.pem ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com
+
+# Back up the live backend file and frontend bundle before deploying
+ssh -i ~/Downloads/camantraaF.pem ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com 'release_backup=$(date +%Y%m%d-%H%M%S); mkdir -p "/home/ubuntu/deploy-backups/$release_backup"; cp /home/ubuntu/ca-test-series-backend/src/controllers/evaluatorController.js "/home/ubuntu/deploy-backups/$release_backup/"; sudo cp -a /var/www/camantraa/dist "/home/ubuntu/deploy-backups/$release_backup/frontend-dist"; printf "%s\n" "$release_backup"'
+
+# Backend: upload only the file changed by this release, then restart and smoke test
+scp -i ~/Downloads/camantraaF.pem /Users/manavgenius/Desktop/CA/ca-test-series-backend/src/controllers/evaluatorController.js ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com:/home/ubuntu/ca-test-series-backend/src/controllers/evaluatorController.js
+ssh -i ~/Downloads/camantraaF.pem ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com 'pm2 restart camantraa-api && curl -fsS https://api.camantraa.com/health'
+
+# Frontend: run `npm run build` locally before staging the complete dist directory
+rsync -av --delete -e "ssh -i ~/Downloads/camantraaF.pem" /Users/manavgenius/Desktop/CA/ca-test-series-lms/dist/ ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com:/home/ubuntu/dist/
+ssh -i ~/Downloads/camantraaF.pem ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com 'sudo rsync -av --delete /home/ubuntu/dist/ /var/www/camantraa/dist/ && sudo chmod -R 755 /var/www/camantraa/dist/'

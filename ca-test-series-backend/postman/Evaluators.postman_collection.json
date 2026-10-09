@@ -1,0 +1,562 @@
+{
+  "info": {
+    "name": "Evaluators",
+    "description": "Complete Evaluators API collection for CA Mantraa platform",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "3c4fcb92-7f43-4d93-8f60-4d4b2a0b6f31"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Auto-set the Authorization header if token is available",
+          "if (pm.collectionVariables.get('token')) {",
+          "    pm.request.headers.add({",
+          "        key: 'Authorization',",
+          "        value: 'Bearer ' + pm.collectionVariables.get('token')",
+          "    });",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Evaluator Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('token', responseJson.token);",
+                  "    pm.collectionVariables.set('evaluatorId', responseJson.user.id);",
+                  "    console.log('Token saved:', responseJson.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"evaluator@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/evaluator/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "evaluator", "signin"]
+            },
+            "description": "Login specifically for evaluators. Returns JWT token and evaluator profile."
+          }
+        },
+        {
+          "name": "General Login (All Roles)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const responseJson = pm.response.json();",
+                  "    pm.collectionVariables.set('token', responseJson.token);",
+                  "    pm.collectionVariables.set('userId', responseJson.user.id);",
+                  "    console.log('Token saved:', responseJson.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin"]
+            },
+            "description": "General login for all user roles (admin, evaluator, student)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Public Endpoints",
+      "item": [
+        {
+          "name": "Get Subjects & CA Levels",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/subjects",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "subjects"]
+            },
+            "description": "Get available subjects and CA levels for evaluator specializations"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Evaluator Management",
+      "item": [
+        {
+          "name": "Create Evaluator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Rajesh Kumar\",\n  \"email\": \"rajesh@example.com\",\n  \"password\": \"123456\",\n  \"caLevel\": \"FOUNDATION\",\n  \"specializations\": [\"Accounting\", \"Business Laws\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators"]
+            },
+            "description": "Admin creates a new evaluator account. Sends invitation and verification emails."
+          }
+        },
+        {
+          "name": "List All Evaluators",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators?q=&subject=&status=&active=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "description": "Search by name or email"
+                },
+                {
+                  "key": "subject",
+                  "value": "",
+                  "description": "Filter by subject specialization"
+                },
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by submission status (pending, in_progress, completed)"
+                },
+                {
+                  "key": "active",
+                  "value": "",
+                  "description": "Filter by active status (true/false)"
+                }
+              ]
+            },
+            "description": "Get list of all evaluators with their stats and filters"
+          }
+        },
+        {
+          "name": "Get Evaluator By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}"]
+            },
+            "description": "Get detailed information about a specific evaluator"
+          }
+        },
+        {
+          "name": "Update Evaluator",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Rajesh K. Updated\",\n  \"specializations\": [\"Accounting\", \"Economics\"],\n  \"isActive\": true,\n  \"caLevel\": \"INTERMEDIATE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}"]
+            },
+            "description": "Update evaluator profile information"
+          }
+        },
+        {
+          "name": "Toggle Evaluator Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}/toggle",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}", "toggle"]
+            },
+            "description": "Activate or deactivate an evaluator account"
+          }
+        },
+        {
+          "name": "Resend Invitation Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}/resend-invite",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}", "resend-invite"]
+            },
+            "description": "Resend set-password invitation email to evaluator"
+          }
+        },
+        {
+          "name": "Resend Verification Email",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}/resend-verification",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}", "resend-verification"]
+            },
+            "description": "Resend email verification link to evaluator"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin - Submission Management",
+      "item": [
+        {
+          "name": "Assign Submissions to Evaluator",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"evaluatorId\": \"{{evaluatorId}}\",\n  \"submissionIds\": [\"submission_id_1\", \"submission_id_2\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/assign",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "assign"]
+            },
+            "description": "Assign multiple submissions to an evaluator"
+          }
+        },
+        {
+          "name": "Get Assignable Submissions for Evaluator",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/{{evaluatorId}}/assignable-submissions?status=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "{{evaluatorId}}", "assignable-submissions"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "Filter by submission status (PENDING, ASSIGNED, IN_PROGRESS, COMPLETED)"
+                }
+              ]
+            },
+            "description": "Get submissions that match evaluator's specialization and can be assigned"
+          }
+        },
+        {
+          "name": "Update Submission Status (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"reassign\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Admin can reassign submissions or change their status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Evaluator - Personal Dashboard",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/me/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "me", "profile"]
+            },
+            "description": "Get evaluator's own profile with statistics"
+          }
+        },
+        {
+          "name": "Get My Queue",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/me/queue?status=",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "me", "queue"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "",
+                  "description": "Filter by status: PENDING (unassigned), ASSIGNED (claimed by someone), IN_PROGRESS (being evaluated), COMPLETED (finished)"
+                }
+              ]
+            },
+            "description": "Get submissions assigned to the logged-in evaluator. Now shows ALL submissions matching evaluator's specialization, not just assigned ones. Use filters to see specific states."
+          }
+        },
+        {
+          "name": "Get Submission Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/me/submissions/{{submissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "me", "submissions", "{{submissionId}}"]
+            },
+            "description": "Get detailed information about any submission that matches evaluator's specialization (not restricted to assigned submissions)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Evaluator - Submission Actions",
+      "item": [
+        {
+          "name": "Start Evaluation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"start\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Mark submission as IN_PROGRESS to start evaluation"
+          }
+        },
+        {
+          "name": "Claim Submission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"claim\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Claim an unassigned submission that matches evaluator's specialization"
+          }
+        },
+        {
+          "name": "Lock Submission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"lock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Lock a submission to prevent others from claiming it. Useful for reserving submissions for later evaluation."
+          }
+        },
+        {
+          "name": "Unlock Submission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"unlock\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Unlock a submission that was previously locked. Can only unlock submissions you locked (unless you're an admin)."
+          }
+        },
+        {
+          "name": "Complete Evaluation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"complete\",\n  \"awardedMarks\": 78,\n  \"remarks\": \"Good work! Well-structured answers with clear explanations. Minor improvements needed in calculation accuracy.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "status"]
+            },
+            "description": "Complete evaluation with marks and remarks"
+          }
+        },
+        {
+          "name": "Upload Evaluated Answer Sheet",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "evaluatedFile",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "marksAwarded",
+                  "value": "85",
+                  "type": "text"
+                },
+                {
+                  "key": "remarks",
+                  "value": "Excellent work! Clear understanding demonstrated with minor calculation errors. Overall performance is commendable.",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/evaluators/submissions/{{submissionId}}/upload-evaluated",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "evaluators", "submissions", "{{submissionId}}", "upload-evaluated"]
+            },
+            "description": "Upload the evaluated answer sheet with marks and remarks. This automatically completes the evaluation."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "evaluatorId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "submissionId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "Admin - Students",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "b1e3d0e8-9b81-4e7e-a8a6-28d4f1b6d0c9"
+  },
+  "item": [
+    {
+      "name": "List Students",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students?q=&purchased=all&status=all&page=1&pageSize=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students"],
+          "query": [
+            { "key": "q", "value": "" },
+            { "key": "purchased", "value": "all" },
+            { "key": "status", "value": "all" },
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "20" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Student Notes",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/:id/notes",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students",":id","notes"]
+        }
+      }
+    },
+    {
+      "name": "Add Student Note",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"note\": \"Followed up with student on 2025-08-17\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/:id/notes",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students",":id","notes"]
+        }
+      }
+  },
+  {
+      "name": "List Student Submissions",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/:id/submissions?status=all&page=1&pageSize=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students",":id","submissions"],
+          "query": [
+            { "key": "status", "value": "all" },
+            { "key": "page", "value": "1" },
+            { "key": "pageSize", "value": "20" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Student By Id",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/:id",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students",":id"]
+        }
+      }
+    },
+    {
+      "name": "Update Student Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Authorization", "value": "Bearer {{token}}" },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{\n  \"status\": \"active\"\n}" },
+        "url": {
+          "raw": "{{baseUrl}}/api/admin/students/:id/status",
+          "host": ["{{baseUrl}}"],
+          "path": ["api","admin","students",":id","status"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" }
+  ]
+}

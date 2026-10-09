@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "test-series-collection-id",
+		"name": "Test Series API",
+		"description": "Collection for testing the admin-only test series creation and management API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{admin_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "test_series_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "test_id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', responseJson.token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@cahero.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/signin",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "signin"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Test Series Management",
+			"item": [
+				{
+					"name": "Create Test Series",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.collectionVariables.set('test_series_id', responseJson.testSeries.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "CA Foundation Mock Test Series 2025",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Comprehensive mock test series for CA Foundation students with updated syllabus",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "999",
+									"type": "text"
+								},
+								{
+									"key": "caLevel",
+									"value": "FOUNDATION",
+									"type": "text"
+								},
+								{
+									"key": "thumbnail",
+									"src": "",
+									"type": "file",
+									"description": "Upload a thumbnail image (JPEG, PNG, GIF, WebP)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series",
+							"host": ["{{base_url}}"],
+							"path": ["test-series"]
+						}
+					}
+				},
+				{
+					"name": "Get All Test Series",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/test-series?page=1&limit=10&caLevel=FOUNDATION",
+							"host": ["{{base_url}}"],
+							"path": ["test-series"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "caLevel",
+									"value": "FOUNDATION"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Test Series by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Test Series",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"CA Foundation Mock Test Series 2025 - Updated\",\n  \"description\": \"Updated comprehensive mock test series\",\n  \"price\": 1199,\n  \"isActive\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Test Management",
+			"item": [
+				{
+					"name": "Add Objective Test",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.collectionVariables.set('test_id', responseJson.test.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Accounting Fundamentals Test\",\n  \"testType\": \"OBJECTIVE\",\n  \"subject\": \"Accounting\",\n  \"duration\": 60,\n  \"instructions\": \"Choose the best answer for each question. Each question carries 2 marks.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}/tests",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}", "tests"]
+						}
+					}
+				},
+				{
+					"name": "Add Subjective Test",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Advanced Accounting Problems\",\n  \"testType\": \"SUBJECTIVE\",\n  \"subject\": \"Advanced Accounting\",\n  \"duration\": 180,\n  \"instructions\": \"Solve all problems with proper working. Show all calculations clearly.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}/tests",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}", "tests"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "MCQ Questions (Objective Tests)",
+			"item": [
+				{
+					"name": "Add MCQ Questions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mcqQuestions\": [\n    {\n      \"questionText\": \"What is the fundamental accounting equation?\",\n      \"options\": {\n        \"A\": \"Assets = Liabilities + Owner's Equity\",\n        \"B\": \"Assets = Liabilities - Owner's Equity\",\n        \"C\": \"Assets + Liabilities = Owner's Equity\",\n        \"D\": \"Assets - Liabilities = Owner's Equity\"\n      },\n      \"correctAnswer\": \"A\",\n      \"marks\": 2\n    },\n    {\n      \"questionText\": \"Which principle states that expenses should be matched with revenues?\",\n      \"options\": {\n        \"A\": \"Revenue Recognition Principle\",\n        \"B\": \"Matching Principle\",\n        \"C\": \"Conservatism Principle\",\n        \"D\": \"Consistency Principle\"\n      },\n      \"correctAnswer\": \"B\",\n      \"marks\": 2\n    },\n    {\n      \"questionText\": \"What type of account is 'Accounts Receivable'?\",\n      \"options\": {\n        \"A\": \"Liability\",\n        \"B\": \"Revenue\",\n        \"C\": \"Asset\",\n        \"D\": \"Expense\"\n      },\n      \"correctAnswer\": \"C\",\n      \"marks\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}/tests/{{test_id}}/mcq",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}", "tests", "{{test_id}}", "mcq"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "PDF Upload (Subjective Tests)",
+			"item": [
+				{
+					"name": "Upload Question Paper and Suggested Answer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "questionPaper",
+									"src": "",
+									"type": "file",
+									"description": "Upload question paper PDF (Required)"
+								},
+								{
+									"key": "suggestedAnswer",
+									"src": "",
+									"type": "file",
+									"description": "Upload suggested answer PDF (Optional)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}/tests/{{test_id}}/pdfs",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}", "tests", "{{test_id}}", "pdfs"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin Operations",
+			"item": [
+				{
+					"name": "Delete Test Series",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/test-series/{{test_series_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["test-series", "{{test_series_id}}"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
