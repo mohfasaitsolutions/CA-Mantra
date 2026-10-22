@@ -13,7 +13,7 @@ import { useCart } from '@/contexts/CartContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Rc4PnSfYRwhslI';
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Tqx62bxzLzdwWH';
 
 const CartCheckout: React.FC = () => {
     const navigate = useNavigate();

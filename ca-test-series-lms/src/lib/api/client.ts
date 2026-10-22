@@ -27,19 +27,10 @@ apiClient.interceptors.request.use(
         const parsedToken = JSON.parse(token);
         if (parsedToken.state && parsedToken.state.token) {
           config.headers.Authorization = `Bearer ${parsedToken.state.token}`;
-          console.log('Request with auth token:', {
-            url: config.url,
-            method: config.method,
-            hasToken: !!parsedToken.state.token
-          });
-        } else {
-          console.warn('No token found in auth storage state');
         }
       } catch (error) {
         console.error('Error parsing auth token:', error);
       }
-    } else {
-      console.warn('No auth token found in localStorage');
     }
     
     return config;
@@ -55,13 +46,6 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    console.error('API Error:', {
-      url: error.config?.url,
-      method: error.config?.method,
-      status: error.response?.status,
-      data: error.response?.data,
-      message: error.message
-    });
     
     // Handle 413 Payload Too Large errors
     if (error.response && error.response.status === 413) {
@@ -71,7 +55,6 @@ apiClient.interceptors.response.use(
     
     // Handle common errors like 401 Unauthorized
     if (error.response && error.response.status === 401) {
-      console.warn('Unauthorized - clearing auth data');
       
       // Don't auto-redirect if this is a login/auth attempt
       // Let the login page handle the error gracefully

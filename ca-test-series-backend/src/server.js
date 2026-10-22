@@ -31,8 +31,10 @@ async function bootstrap() {
   // Initialize storage directories
   initializeStorageDirectories();
 
-  // Seed default users (admin, evaluator, student)
-  await seedDefaultUsers();
+  // Seed demo users only when explicitly enabled (never by default, never in production)
+  if (process.env.SEED_DEFAULT_USERS === 'true') {
+    await seedDefaultUsers();
+  }
 
   const app = express();
   app.use(helmet({
@@ -40,11 +42,15 @@ async function bootstrap() {
     crossOriginEmbedderPolicy: false,
   }));
 
-  // Enable CORS for all origins (dynamic)
+  // CORS allow-list. Override with CORS_ORIGINS (comma-separated) in .env.
+  const allowedOrigins = (process.env.CORS_ORIGINS ||
+    'https://camantraa.com,https://www.camantraa.com,http://localhost:8080,http://localhost:5173')
+    .split(',').map((o) => o.trim()).filter(Boolean);
   app.use(cors({
     origin: (origin, callback) => {
-      // Allow any origin
-      callback(null, true);
+      // No Origin header = non-browser client (curl, Razorpay webhook, server-to-server)
+      if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(null, false);
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

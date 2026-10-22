@@ -107,13 +107,6 @@ async function seedDefaultUsers() {
 
     console.log('🎉 Default users seeding completed successfully!\n');
     
-    // Log summary of default users
-    console.log('📋 Default User Credentials:');
-    console.log('👨‍💼 Admin: admin@camantraa.com / admin123456');
-    console.log('👩‍🏫 Evaluator: evaluator@camantraa.com / evaluator123456');
-    console.log('👨‍🎓 Student: student@camantraa.com / student123456');
-    console.log('');
-    
   } catch (error) {
     console.error('❌ Error seeding default users:', error);
     throw error;

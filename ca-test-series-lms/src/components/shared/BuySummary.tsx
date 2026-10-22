@@ -41,7 +41,7 @@ interface BuySummaryProps {
   onSuccess?: () => void;
 }
 
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Rc4PnSfYRwhslI';
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Tqx62bxzLzdwWH';
 
 const BuySummary: React.FC<BuySummaryProps> = ({
   testSeries,

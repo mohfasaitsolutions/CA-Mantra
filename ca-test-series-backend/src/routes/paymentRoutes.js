@@ -31,16 +31,16 @@ router.post('/verify',
   paymentController.verifyPayment
 );
 
+// Get payment history - Students only (must be registered before /:paymentId)
+router.get('/history',
+  requireRoles(ROLES.STUDENTS),
+  paymentController.getPaymentHistory
+);
+
 // Get payment details - Students only
 router.get('/:paymentId',
   requireRoles(ROLES.STUDENTS),
   paymentController.getPaymentDetails
-);
-
-// Get payment history - Students only
-router.get('/history',
-  requireRoles(ROLES.STUDENTS),
-  paymentController.getPaymentHistory
 );
 
 // Webhook endpoint - No authentication (verified via signature)

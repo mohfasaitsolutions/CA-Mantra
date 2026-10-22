@@ -19,7 +19,7 @@ import { usePlans } from "@/hooks/use-plans";
 import { useAuth } from "@/hooks/use-auth";
 import { Plan } from "@/lib/api/plans";
 import { useCart } from "@/contexts/CartContext";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 type ItemType = "all" | "plans" | "test-series";
 

@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/contexts/CartContext";
 import { TEXT_COLORS } from "@/constants/colors";
 import { ShoppingCart } from "lucide-react";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 const levelLabel = (lvl?: string) =>
   lvl === "FOUNDATION"

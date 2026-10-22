@@ -27,7 +27,7 @@ import { Search, Loader2, RefreshCw, X, Copy } from "lucide-react";
 import { adminApi } from "@/lib/api/admin";
 import { testSeriesApi } from "@/lib/api/testSeries";
 import { format } from "date-fns";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 const formatDate = (dateString: string) => {
     if (!dateString) return "-";

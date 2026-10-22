@@ -13,7 +13,7 @@ import { useAuth } from '@/hooks/use-auth';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
-const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Rc4PnSfYRwhslI';
+const RAZORPAY_KEY_ID = import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_Tqx62bxzLzdwWH';
 
 interface TestSeriesData {
   _id: string;

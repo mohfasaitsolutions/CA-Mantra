@@ -18,7 +18,7 @@ import { useTestSeries } from "@/hooks/use-test-series";
 import { usePlans } from "@/hooks/use-plans";
 import { useAuth } from "@/hooks/use-auth";
 import { useCart } from "@/contexts/CartContext";
-import { toast } from "react-hot-toast";
+import { toast } from "sonner";
 
 const TestSeriesPage = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
