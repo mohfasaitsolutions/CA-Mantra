@@ -10,3 +10,4 @@ export { usePublicStudyMaterials } from './use-public-study-materials';
 export { usePublicSchedules } from './use-public-schedules';
 export { useScheduleManagement } from './use-schedule-management';
 export { useRoleSessionGuard } from './use-role-session-guard';
+export { useRoleBasePath, useIsCourseUploader } from './use-role-base-path';

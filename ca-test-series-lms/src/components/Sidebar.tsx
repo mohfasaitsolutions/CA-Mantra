@@ -7,27 +7,42 @@ import {
   studentMenuItems,
   adminMenuItems,
   evaluatorMenuItems,
+  courseUploaderMenuItems,
 } from "@/lib/menu-items";
+import { isCourseUploader } from "@/constants/roles";
 
 interface SidebarProps {
-  role: "student" | "admin" | "evaluator";
+  role: "student" | "admin" | "evaluator" | "course-uploader";
 }
+
+/**
+ * Course management pages are shared with the admin console and pass
+ * role="admin", so the signed-in role wins whenever it is a course uploader —
+ * that keeps the admin-only links out of their sidebar.
+ */
+const useEffectiveRole = (role: SidebarProps["role"]) => {
+  const user = useAuthStore((s) => s.user);
+  return isCourseUploader(user?.role) ? "course-uploader" : role;
+};
 
 const SidebarNavigation = memo(({ role }: SidebarProps) => {
   const location = useLocation();
+  const effectiveRole = useEffectiveRole(role);
 
   const menuItems = useMemo(() => {
-    switch (role) {
+    switch (effectiveRole) {
       case "student":
         return studentMenuItems;
       case "admin":
         return adminMenuItems;
       case "evaluator":
         return evaluatorMenuItems;
+      case "course-uploader":
+        return courseUploaderMenuItems;
       default:
         return [];
     }
-  }, [role]);
+  }, [effectiveRole]);
 
   return (
     <div className="mt-8 flex-grow flex flex-col">

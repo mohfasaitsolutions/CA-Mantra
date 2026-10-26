@@ -93,3 +93,15 @@ export const evaluatorMenuItems = [
     { icon: User, label: "Profile", path: "/evaluator/profile" },
     { icon: Settings, label: "Settings", path: "/evaluator/settings" },
 ];
+
+// Course uploader: course content only — no admin console (dashboard, orders,
+// students, evaluators, support, analytics, settings) is reachable for them.
+export const courseUploaderMenuItems = [
+    { icon: BookOpen, label: "Test Series", path: "/uploader/tests" },
+    { icon: FolderOpen, label: "Plans", path: "/uploader/plans" },
+    {
+        icon: FileText,
+        label: "Study Materials",
+        path: "/uploader/study-materials",
+    },
+];

@@ -20,6 +20,7 @@ import { plansApi, TestSeriesItem } from "@/lib/api/plans";
 import { testSeriesApi, TestSeriesResponse } from "@/lib/api/testSeries";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebar from "@/components/MobileSidebar";
+import { useRoleBasePath } from "@/hooks/use-role-base-path";
 
 interface LocalTestSeriesItem {
     testSeriesId: string;
@@ -36,6 +37,7 @@ interface LocalTestSeriesItem {
 const CreatePlan = () => {
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
     const navigate = useNavigate();
+    const basePath = useRoleBasePath();
     const { planId } = useParams<{ planId: string }>();
     const { toast } = useToast();
     const { isLoading: saveLoading } = usePlansManagement();
@@ -92,7 +94,7 @@ const CreatePlan = () => {
                     description: "Failed to load plan details",
                     variant: "destructive",
                 });
-                navigate("/admin/plans");
+                navigate(`${basePath}/plans`);
             } finally {
                 setLoadingPlan(false);
             }
@@ -166,7 +168,7 @@ const CreatePlan = () => {
                 });
                 toast({ title: "Success", description: "Plan created" });
             }
-            navigate("/admin/plans");
+            navigate(`${basePath}/plans`);
         } catch (err: any) {
             toast({
                 title: "Error",
@@ -263,7 +265,7 @@ const CreatePlan = () => {
                                 {isEditMode ? "Edit Plan" : "Create Plan"}
                             </h1>
                         </div>
-                        <Button variant="outline" onClick={() => navigate("/admin/plans")}>
+                        <Button variant="outline" onClick={() => navigate(`${basePath}/plans`)}>
                             <ArrowLeft className="h-4 w-4 mr-2" /> Back to Plans
                         </Button>
                     </div>

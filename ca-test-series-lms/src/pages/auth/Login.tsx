@@ -26,6 +26,8 @@ const getRoleBasedRedirect = (role?: string): string => {
     case "EVALUATORS":
     case "EVALUATOR":
       return "/evaluator/dashboard";
+    case "COURSE_UPLOADER":
+      return "/uploader/tests";
     case "STUDENTS":
     case "STUDENT":
     default:

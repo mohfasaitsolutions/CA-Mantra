@@ -22,6 +22,7 @@ import MobileSidebar from "@/components/MobileSidebar";
 import MCQCreator from "@/components/admin/MCQCreator";
 import { evaluatorsApi } from "@/lib/api/evaluators";
 import type { EvaluatorListItem } from "@/lib/api/evaluators";
+import { useRoleBasePath } from "@/hooks/use-role-base-path";
 
 interface TestForm {
   id?: string;
@@ -95,6 +96,7 @@ const subjectsByLevel = {
 const CreateTest = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const basePath = useRoleBasePath();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
@@ -265,7 +267,7 @@ const CreateTest = () => {
     };
 
     // Navigate back with the test data
-    navigate("/admin/tests/create", {
+    navigate(`${basePath}/tests/create`, {
       state: {
         savedTest: testData,
         isEditing: isEditing,
@@ -286,7 +288,7 @@ const CreateTest = () => {
   };
 
   const handleCancel = () => {
-    navigate("/admin/tests/create", {
+    navigate(`${basePath}/tests/create`, {
       state: {
         formState: formState, // Pass back the original form state
       },

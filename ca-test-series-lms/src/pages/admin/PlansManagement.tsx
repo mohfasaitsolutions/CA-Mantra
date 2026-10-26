@@ -44,6 +44,7 @@ import { formatDate } from "@/utils/dateUtils";
 import { Badge } from "@/components/ui/badge";
 import { usePlans, usePlansManagement } from "@/hooks/use-plans";
 import { Plan } from "@/lib/api/plans";
+import { useRoleBasePath, useIsCourseUploader } from "@/hooks/use-role-base-path";
 
 const PlansManagement = () => {
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -51,6 +52,8 @@ const PlansManagement = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [planToDelete, setPlanToDelete] = useState<Plan | null>(null);
     const navigate = useNavigate();
+    const basePath = useRoleBasePath();
+    const isUploader = useIsCourseUploader();
 
     const { plans, isLoading, fetchPlans } = usePlans();
     const { deletePlan, togglePlanStatus, isLoading: isActionLoading } = usePlansManagement();
@@ -112,7 +115,7 @@ const PlansManagement = () => {
                             </Button>
                             <h1 className="text-2xl font-bold text-gray-800">Plans Management</h1>
                         </div>
-                        <Button onClick={() => navigate("/admin/plans/create")}>
+                        <Button onClick={() => navigate(`${basePath}/plans/create`)}>
                             <PlusCircle className="h-4 w-4 mr-2" />
                             Create Plan
                         </Button>
@@ -156,7 +159,7 @@ const PlansManagement = () => {
                                     {!searchTerm && (
                                         <Button
                                             className="mt-4"
-                                            onClick={() => navigate("/admin/plans/create")}
+                                            onClick={() => navigate(`${basePath}/plans/create`)}
                                         >
                                             <PlusCircle className="h-4 w-4 mr-2" />
                                             Create Your First Plan
@@ -232,19 +235,21 @@ const PlansManagement = () => {
                                                             <Button
                                                                 variant="ghost"
                                                                 size="icon"
-                                                                onClick={() => navigate(`/admin/plans/${plan.id}/edit`)}
+                                                                onClick={() => navigate(`${basePath}/plans/${plan.id}/edit`)}
                                                             >
                                                                 <Pencil className="h-4 w-4" />
                                                             </Button>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="text-red-500 hover:text-red-600"
-                                                                onClick={() => handleDelete(plan)}
-                                                                disabled={isActionLoading}
-                                                            >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </Button>
+                                                            {!isUploader && (
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    className="text-red-500 hover:text-red-600"
+                                                                    onClick={() => handleDelete(plan)}
+                                                                    disabled={isActionLoading}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            )}
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

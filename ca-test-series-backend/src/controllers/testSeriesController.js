@@ -345,6 +345,16 @@ const updateTestSeriesValidation = [
     .optional()
     .isFloat({ min: 0 })
     .withMessage('Price must be a positive number'),
+  // originalPrice/discountedPrice feed the pre-save hook that sets `price`,
+  // which is what the payment and cart controllers charge. Validate them too.
+  body('originalPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Original price must be a positive number'),
+  body('discountedPrice')
+    .optional()
+    .isFloat({ min: 0 })
+    .withMessage('Discounted price must be a positive number'),
   body('caLevel')
     .optional()
     .isIn(['FOUNDATION', 'INTERMEDIATE', 'FINAL'])

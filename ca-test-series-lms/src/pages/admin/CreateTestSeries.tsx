@@ -25,6 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTestSeriesManagement, MCQQuestion } from "@/hooks/use-test-series";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebar from "@/components/MobileSidebar";
+import { useRoleBasePath } from "@/hooks/use-role-base-path";
 
 interface TestForm {
   id: string;
@@ -44,6 +45,7 @@ interface TestForm {
 const CreateTestSeries = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
+  const basePath = useRoleBasePath();
   const location = useLocation();
   const { toast } = useToast();
   const { createTestSeries, isLoading } = useTestSeriesManagement();
@@ -140,7 +142,7 @@ const CreateTestSeries = () => {
       return;
     }
 
-    navigate("/admin/create-test", {
+    navigate(`${basePath}/create-test`, {
       state: {
         caLevel,
         testSeriesTitle: title.trim(), // Pass the test series title
@@ -163,7 +165,7 @@ const CreateTestSeries = () => {
   };
 
   const handleEditTest = (test: TestForm) => {
-    navigate("/admin/create-test", {
+    navigate(`${basePath}/create-test`, {
       state: {
         caLevel,
         testSeriesTitle: title.trim(), // Pass the test series title
@@ -389,7 +391,7 @@ const CreateTestSeries = () => {
 
     const result = await createTestSeries(testSeriesData);
     if (result) {
-      navigate("/admin/tests");
+      navigate(`${basePath}/tests`);
     }
   };
 
@@ -418,7 +420,7 @@ const CreateTestSeries = () => {
                 Create Test Series
               </h1>
             </div>
-            <Button variant="outline" onClick={() => navigate("/admin/tests")}>
+            <Button variant="outline" onClick={() => navigate(`${basePath}/tests`)}>
               <ArrowLeft className="h-4 w-4 mr-2" /> Back to Tests
             </Button>
           </div>
@@ -672,7 +674,7 @@ const CreateTestSeries = () => {
               <Button
                 variant="outline"
                 type="button"
-                onClick={() => navigate("/admin/tests")}
+                onClick={() => navigate(`${basePath}/tests`)}
               >
                 Cancel
               </Button>

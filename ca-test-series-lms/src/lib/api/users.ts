@@ -36,7 +36,7 @@ export interface CreateUserPayload {
   email: string;
   password: string;
   caLevel?: string;
-  role: 'ADMIN' | 'EVALUATOR' | 'STUDENTS';
+  role: 'ADMIN' | 'EVALUATOR' | 'COURSE_UPLOADER' | 'STUDENTS';
 }
 
 export interface PaginatedUsers<T = AuthUser> {

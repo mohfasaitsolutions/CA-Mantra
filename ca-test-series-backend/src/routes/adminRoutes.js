@@ -32,13 +32,13 @@ router.put('/support-tickets/:ticketId/status', auth(), requireRoles(ROLES.ADMIN
 router.get('/orders', auth(), requireRoles(ROLES.ADMIN), ctrl.getOrders);
 
 // Study materials management
-router.get('/study-materials', auth(), requireRoles(ROLES.ADMIN), ctrl.getStudyMaterials);
-router.post('/study-materials', auth(), requireRoles(ROLES.ADMIN), ctrl.createStudyMaterial);
-router.get('/study-materials/analytics', auth(), requireRoles(ROLES.ADMIN), ctrl.getStudyMaterialsAnalytics);
-router.get('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN), ctrl.getStudyMaterialDetails);
-router.put('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN), ctrl.updateStudyMaterial);
-router.delete('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN), ctrl.deleteStudyMaterial);
-router.put('/study-materials/:id/toggle-status', auth(), requireRoles(ROLES.ADMIN), ctrl.toggleStudyMaterialStatus);
+router.get('/study-materials', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), ctrl.getStudyMaterials);
+router.post('/study-materials', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), ctrl.createStudyMaterial);
+router.get('/study-materials/analytics', auth(), requireRoles(ROLES.ADMIN), ctrl.getStudyMaterialsAnalytics); // ADMIN only: returns revenue
+router.get('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), ctrl.getStudyMaterialDetails);
+router.put('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), ctrl.updateStudyMaterial);
+router.delete('/study-materials/:id', auth(), requireRoles(ROLES.ADMIN), ctrl.deleteStudyMaterial); // ADMIN only: irreversible
+router.put('/study-materials/:id/toggle-status', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), ctrl.toggleStudyMaterialStatus);
 
 // Schedules management
 router.get('/schedules', auth(), requireRoles(ROLES.ADMIN), scheduleCtrl.getSchedules);

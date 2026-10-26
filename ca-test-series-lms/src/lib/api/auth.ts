@@ -14,8 +14,8 @@ export interface SigninPayload {
   password: string;
 }
 
-// Backend returns uppercase roles (ADMIN, EVALUATOR, STUDENTS). We map them internally.
-export type BackendRole = 'ADMIN' | 'EVALUATOR' | 'STUDENTS';
+// Backend returns uppercase roles (ADMIN, EVALUATOR, COURSE_UPLOADER, STUDENTS). We map them internally.
+export type BackendRole = 'ADMIN' | 'EVALUATOR' | 'COURSE_UPLOADER' | 'STUDENTS';
 export interface AuthUser {
   id: string;
   studentId?: number;
@@ -69,6 +69,8 @@ export function getPostLoginRedirect(role: AuthUser['role'] | string): string {
       return '/admin/dashboard';
     case 'evaluator':
       return '/evaluator/dashboard';
+    case 'course_uploader':
+      return '/uploader/tests';
     case 'students': // backend plural form
     case 'student':
     default:
@@ -76,9 +78,10 @@ export function getPostLoginRedirect(role: AuthUser['role'] | string): string {
   }
 }
 
-export function mapBackendRoleToInternal(role: BackendRole | string | undefined): 'student' | 'admin' | 'evaluator' {
+export function mapBackendRoleToInternal(role: BackendRole | string | undefined): 'student' | 'admin' | 'evaluator' | 'course-uploader' {
   const r = (role || '').toUpperCase();
   if (r === 'ADMIN') return 'admin';
   if (r === 'EVALUATOR') return 'evaluator';
+  if (r === 'COURSE_UPLOADER') return 'course-uploader';
   return 'student'; // covers STUDENTS or anything else
 }

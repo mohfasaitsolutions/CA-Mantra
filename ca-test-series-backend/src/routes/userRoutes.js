@@ -18,7 +18,7 @@ router.post('/', auth(), requireRoles(ROLES.ADMIN), [
   body('email').isEmail(),
   body('password').isLength({ min:6 }),
   body('caLevel').isIn(['FOUNDATION','INTERMEDIATE','FINAL']),
-  body('role').isIn([ROLES.ADMIN, ROLES.EVALUATOR]),
+  body('role').isIn([ROLES.ADMIN, ROLES.EVALUATOR, ROLES.COURSE_UPLOADER]),
   body('specializations').optional().isArray(),
   body('specializations.*').optional().isIn(SUBJECTS)
 ], ctrl.adminCreateUser);

@@ -257,6 +257,38 @@ function AppRoutes() {
         </Route>
       </Route>
 
+      {/* Course Uploader Protected Routes
+          Course uploaders manage course content only — they get their own
+          /uploader/* prefix and never reach the /admin/* console. Every path
+          segment below MUST mirror its /admin/* counterpart, because the shared
+          pages navigate via `${basePath}/<segment>` (see useRoleBasePath). */}
+      <Route
+        element={<RoleProtectedRoute roles={["COURSE_UPLOADER", "ADMIN"]} />}
+      >
+        <Route element={<ProtectedRoute />}>
+          <Route path="/uploader/tests" element={<TestSeriesManagement />} />
+          <Route
+            path="/uploader/tests/create"
+            element={<CreateTestSeries />}
+          />
+          <Route
+            path="/uploader/tests/edit/:id"
+            element={<EditTestSeries />}
+          />
+          <Route path="/uploader/create-test" element={<CreateTest />} />
+          <Route path="/uploader/plans" element={<PlansManagement />} />
+          <Route path="/uploader/plans/create" element={<CreatePlan />} />
+          <Route
+            path="/uploader/plans/:planId/edit"
+            element={<CreatePlan />}
+          />
+          <Route
+            path="/uploader/study-materials"
+            element={<StudyMaterialManagement />}
+          />
+        </Route>
+      </Route>
+
       {/* Evaluator Protected Routes */}
       <Route
         element={<RoleProtectedRoute roles={["EVALUATOR", "ADMIN"]} />}

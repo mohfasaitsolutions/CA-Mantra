@@ -169,7 +169,7 @@ export const FormSchemas = {
   createUser: z.object({
     fullName: ValidationSchemas.name,
     email: ValidationSchemas.email,
-    role: z.enum(["admin", "evaluator", "student"], {
+    role: z.enum(["admin", "evaluator", "course-uploader", "student"], {
       required_error: "Please select a role",
     }),
     caLevel: ValidationSchemas.caLevel,

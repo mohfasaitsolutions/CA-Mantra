@@ -27,25 +27,25 @@ const validateObjectId = (paramName) => [
 
 // Public routes (for students to view test series)
 router.get('/', getTestSeries); // Get all test series with filtering
-router.get('/admin/all', auth(), requireRoles(ROLES.ADMIN), (req, res) => {
+router.get('/admin/all', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), (req, res) => {
   req.includeDrafts = true;
   return getTestSeries(req, res);
 });
-router.get('/admin/:testSeriesId', auth(), requireRoles(ROLES.ADMIN), validateObjectId('testSeriesId'), (req, res) => {
+router.get('/admin/:testSeriesId', auth(), requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER), validateObjectId('testSeriesId'), (req, res) => {
   req.includeDrafts = true;
   return getTestSeriesById(req, res);
 });
 router.get('/:testSeriesId', validateObjectId('testSeriesId'), getTestSeriesById); // Get specific test series (sanitized)
 
-// Protected routes - Admin only
+// Protected routes - course content managers
 router.use(auth()); // All routes below require authentication
-router.use(requireRoles(ROLES.ADMIN)); // All routes below require admin role
+router.use(requireRoles(ROLES.ADMIN, ROLES.COURSE_UPLOADER)); // Admins and course uploaders
 
 // Test Series Management
 router.post('/', createTestSeries); // Create new test series (validation handled inside controller due to multer)
 router.put('/:testSeriesId', validateObjectId('testSeriesId'), updateTestSeriesValidation, updateTestSeries); // Update test series
 router.patch('/:testSeriesId/publish', validateObjectId('testSeriesId'), publishTestSeries); // Publish a completed draft
-router.delete('/:testSeriesId', validateObjectId('testSeriesId'), deleteTestSeries); // Delete test series
+router.delete('/:testSeriesId', requireRoles(ROLES.ADMIN), validateObjectId('testSeriesId'), deleteTestSeries); // Delete test series (ADMIN only: irreversible, removes stored PDFs)
 
 // Test Management within Test Series
 router.post('/:testSeriesId/tests', 

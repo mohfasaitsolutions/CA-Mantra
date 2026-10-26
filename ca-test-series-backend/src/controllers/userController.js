@@ -50,7 +50,7 @@ exports.adminCreateUser = async (req,res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   const { fullName, email, password, caLevel, role, specializations } = req.body;
-  if (![ROLES.ADMIN, ROLES.EVALUATOR].includes(role)) return res.status(400).json({ message: 'Invalid role' });
+  if (![ROLES.ADMIN, ROLES.EVALUATOR, ROLES.COURSE_UPLOADER].includes(role)) return res.status(400).json({ message: 'Invalid role' });
   const exists = await User.findOne({ email });
   if (exists) return res.status(409).json({ message: 'Email exists' });
   const payload = { fullName, email, password, caLevel, role, emailVerified: false };

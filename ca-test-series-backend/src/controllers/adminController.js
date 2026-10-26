@@ -1216,9 +1216,10 @@ exports.getStudyMaterialDetails = async (req, res) => {
       return res.status(404).json({ message: 'Study material not found' });
     }
 
-    // Get purchase statistics for paid materials
+    // Get purchase statistics for paid materials. Revenue is admin-only, so a
+    // COURSE_UPLOADER gets the material without the commerce figures.
     let purchaseStats = null;
-    if (material.type === 'PAID') {
+    if (material.type === 'PAID' && req.user?.role === ROLES.ADMIN) {
       const [totalPurchases, completedPurchases, revenue] = await Promise.all([
         Purchase.countDocuments({ studyMaterialId: id }),
         Purchase.countDocuments({ studyMaterialId: id, status: 'COMPLETED' }),
@@ -1253,14 +1254,16 @@ exports.getStudyMaterialDetails = async (req, res) => {
 exports.updateStudyMaterial = async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
-
-    // Remove fields that shouldn't be updated directly
-    delete updates._id;
-    delete updates.uploadedBy;
-    delete updates.createdAt;
-    delete updates.downloadCount;
-    delete updates.purchaseCount;
+    // Allow-list: a denylist here let callers set anything new the schema gains,
+    // including uploadedBy/counters and arbitrary `metadata`.
+    const EDITABLE_FIELDS = [
+      'title', 'description', 'category', 'subject', 'caLevel', 'type',
+      'price', 'discountPrice', 'fileInfo', 'isActive', 'featured', 'tags'
+    ];
+    const updates = {};
+    for (const field of EDITABLE_FIELDS) {
+      if (req.body[field] !== undefined) updates[field] = req.body[field];
+    }
 
     const material = await StudyMaterial.findByIdAndUpdate(
       id,

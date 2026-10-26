@@ -39,6 +39,7 @@ import {
   useTestSeriesManagement,
 } from "@/hooks/use-test-series";
 import { TestSeriesResponse } from "@/lib/api/testSeries";
+import { useRoleBasePath, useIsCourseUploader } from "@/hooks/use-role-base-path";
 
 const TestSeriesManagement = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -51,6 +52,9 @@ const TestSeriesManagement = () => {
   >("");
 
   const navigate = useNavigate();
+
+  const basePath = useRoleBasePath();
+  const isUploader = useIsCourseUploader();
 
   // Use the hooks for API integration
   const {
@@ -179,7 +183,7 @@ const TestSeriesManagement = () => {
                 Test Series Management
               </h1>
             </div>
-            <Button onClick={() => navigate("/admin/tests/create")}>
+            <Button onClick={() => navigate(`${basePath}/tests/create`)}>
               <PlusCircle className="h-4 w-4 mr-2" />
               Create New Test Series
             </Button>
@@ -308,79 +312,82 @@ const TestSeriesManagement = () => {
                                       <ToggleLeft className="h-4 w-4 text-gray-500" />
                                     )}
                                   </Button>
-                                  <Dialog
-                                    open={
-                                      deleteDialogOpen &&
-                                      selectedTest === test.id
-                                    }
-                                    onOpenChange={(open) => {
-                                      setDeleteDialogOpen(open);
-                                      if (!open) setSelectedTest(null);
-                                    }}
-                                  >
-                                    <DialogTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        onClick={() => {
-                                          console.log(
-                                            "Setting selected test for deletion:",
-                                            test.id
-                                          );
-                                          setSelectedTest(String(test.id));
-                                          setDeleteDialogOpen(true);
-                                        }}
-                                        disabled={actionLoading}
-                                      >
-                                        <Trash2 className="h-4 w-4 text-red-500" />
-                                        <span className="sr-only">Delete</span>
-                                      </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                      <DialogHeader>
-                                        <DialogTitle>
-                                          Confirm Deletion
-                                        </DialogTitle>
-                                      </DialogHeader>
-                                      <p>
-                                        Are you sure you want to delete "
-                                        {test.title}"? This action cannot be
-                                        undone.
-                                      </p>
-                                      <DialogFooter>
+                                  {/* Deletion is ADMIN-only; the API rejects it for uploaders. */}
+                                  {!isUploader && (
+                                    <Dialog
+                                      open={
+                                        deleteDialogOpen &&
+                                        selectedTest === test.id
+                                      }
+                                      onOpenChange={(open) => {
+                                        setDeleteDialogOpen(open);
+                                        if (!open) setSelectedTest(null);
+                                      }}
+                                    >
+                                      <DialogTrigger asChild>
                                         <Button
-                                          variant="outline"
+                                          variant="ghost"
+                                          size="icon"
                                           onClick={() => {
-                                            setDeleteDialogOpen(false);
-                                            setSelectedTest(null);
-                                          }}
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          variant="destructive"
-                                          onClick={() => {
-                                            // Use the explicit id from this row to avoid undefined
                                             console.log(
-                                              "Deleting test series (row id):",
+                                              "Setting selected test for deletion:",
                                               test.id
                                             );
-                                            handleDelete(String(test.id));
+                                            setSelectedTest(String(test.id));
+                                            setDeleteDialogOpen(true);
                                           }}
                                           disabled={actionLoading}
                                         >
-                                          {actionLoading
-                                            ? "Deleting..."
-                                            : "Delete"}
+                                          <Trash2 className="h-4 w-4 text-red-500" />
+                                          <span className="sr-only">Delete</span>
                                         </Button>
-                                      </DialogFooter>
-                                    </DialogContent>
-                                  </Dialog>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>
+                                            Confirm Deletion
+                                          </DialogTitle>
+                                        </DialogHeader>
+                                        <p>
+                                          Are you sure you want to delete "
+                                          {test.title}"? This action cannot be
+                                          undone.
+                                        </p>
+                                        <DialogFooter>
+                                          <Button
+                                            variant="outline"
+                                            onClick={() => {
+                                              setDeleteDialogOpen(false);
+                                              setSelectedTest(null);
+                                            }}
+                                          >
+                                            Cancel
+                                          </Button>
+                                          <Button
+                                            variant="destructive"
+                                            onClick={() => {
+                                              // Use the explicit id from this row to avoid undefined
+                                              console.log(
+                                                "Deleting test series (row id):",
+                                                test.id
+                                              );
+                                              handleDelete(String(test.id));
+                                            }}
+                                            disabled={actionLoading}
+                                          >
+                                            {actionLoading
+                                              ? "Deleting..."
+                                              : "Delete"}
+                                          </Button>
+                                        </DialogFooter>
+                                      </DialogContent>
+                                    </Dialog>
+                                  )}
                                   <Button
                                     variant="ghost"
                                     size="icon"
                                     onClick={() =>
-                                      navigate(`/admin/tests/edit/${test.id}`)
+                                      navigate(`${basePath}/tests/edit/${test.id}`)
                                     }
                                   >
                                     <Pencil className="h-4 w-4" />

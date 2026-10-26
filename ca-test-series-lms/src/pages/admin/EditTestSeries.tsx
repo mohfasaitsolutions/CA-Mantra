@@ -29,6 +29,7 @@ import {
 } from "@/hooks/use-test-series";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebar from "@/components/MobileSidebar";
+import { useRoleBasePath } from "@/hooks/use-role-base-path";
 
 const EditTestSeries = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -55,6 +56,7 @@ const EditTestSeries = () => {
   const { id: testId } = useParams();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const basePath = useRoleBasePath();
 
   const { fetchTestSeriesById, isLoading: fetchLoading } = useTestSeries();
   // Keep a stable ref to avoid effect dependency churn triggering re-fetch loops
@@ -109,7 +111,7 @@ const EditTestSeries = () => {
           description: "The requested test series could not be found.",
           variant: "destructive",
         });
-        navigate("/admin/tests");
+        navigate(`${basePath}/tests`);
       }
     };
     loadTestSeries();
@@ -185,7 +187,7 @@ const EditTestSeries = () => {
 
     const success = await updateTestSeries(testId, updateData);
     if (success) {
-      navigate("/admin/tests");
+      navigate(`${basePath}/tests`);
     }
   };
 
@@ -219,7 +221,7 @@ const EditTestSeries = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate("/admin/tests")}
+                onClick={() => navigate(`${basePath}/tests`)}
                 className="mr-2"
               >
                 <ArrowLeft className="h-5 w-5" />

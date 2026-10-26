@@ -7,10 +7,12 @@ import {
   studentMenuItems,
   adminMenuItems,
   evaluatorMenuItems,
+  courseUploaderMenuItems,
 } from "@/lib/menu-items";
+import { isCourseUploader } from "@/constants/roles";
 
 interface MobileSidebarProps {
-  role: "student" | "admin" | "evaluator";
+  role: "student" | "admin" | "evaluator" | "course-uploader";
   isOpen: boolean;
   onClose: () => void;
 }
@@ -24,7 +26,9 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
   const isActive = (path: string) => location.pathname.startsWith(path);
   // Hooks must run before any returns
 
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
+  // Shared course pages pass role="admin"; the signed-in role wins for uploaders.
+  const effectiveRole = isCourseUploader(user?.role) ? "course-uploader" : role;
   const handleLogout = () => {
     logout();
     onClose();
@@ -33,7 +37,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
 
   const renderMenuByRole = () => {
     let items = [];
-    switch (role) {
+    switch (effectiveRole) {
       case "student":
         items = studentMenuItems;
         break;
@@ -42,6 +46,9 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({
         break;
       case "evaluator":
         items = evaluatorMenuItems;
+        break;
+      case "course-uploader":
+        items = courseUploaderMenuItems;
         break;
       default:
         return null;

@@ -47,6 +47,7 @@ import { formatDate } from "@/utils/dateUtils";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebar from "@/components/MobileSidebar";
 import { useAuth } from "@/hooks/use-auth";
+import { useIsCourseUploader } from "@/hooks/use-role-base-path";
 import {
   useStudyMaterialsManagement,
   StudyMaterial,
@@ -113,6 +114,7 @@ const StudyMaterialManagement = () => {
     ]
   );
 
+  const isUploader = useIsCourseUploader();
   const {
     materials,
     pagination,
@@ -143,16 +145,18 @@ const StudyMaterialManagement = () => {
       navigate("/auth");
       return;
     }
-    if (role !== "ADMIN") {
+    if (role !== "ADMIN" && !isUploader) {
       navigate("/");
       return;
     }
-  }, [isLoggedIn, role, navigate]);
+  }, [isLoggedIn, role, isUploader, navigate]);
 
-  // Fetch analytics on mount
+  // Fetch analytics on mount. Skipped for course uploaders: it carries revenue
+  // figures and the API restricts it to admins, so calling it would only 403.
   useEffect(() => {
+    if (isUploader) return;
     fetchAnalytics();
-  }, [fetchAnalytics]);
+  }, [fetchAnalytics, isUploader]);
 
   const handleAddTag = () => {
     if (tagInput.trim()) {
@@ -755,14 +759,16 @@ const StudyMaterialManagement = () => {
                             <ToggleLeft className="h-4 w-4 text-gray-400" />
                           )}
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDelete(material._id)}
-                          className="text-red-500 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {!isUploader && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(material._id)}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>
