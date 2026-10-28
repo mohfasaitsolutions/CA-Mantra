@@ -2,9 +2,9 @@ import React, { useState, useMemo } from "react";
 import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { authApi } from "@/lib/api/auth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const ResetPassword: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -14,7 +14,6 @@ const ResetPassword: React.FC = () => {
 
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
-  const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const disabled =
@@ -74,8 +73,7 @@ const ResetPassword: React.FC = () => {
                 <label className="block text-sm font-medium mb-1">
                   New Password
                 </label>
-                <Input
-                  type={show ? "text" : "password"}
+                <PasswordInput
                   placeholder="Enter new password (min 6 chars)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -86,23 +84,14 @@ const ResetPassword: React.FC = () => {
                 <label className="block text-sm font-medium mb-1">
                   Confirm Password
                 </label>
-                <Input
-                  type={show ? "text" : "password"}
+                <PasswordInput
                   placeholder="Re-enter password"
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   required
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm">
-                  <input
-                    type="checkbox"
-                    checked={show}
-                    onChange={(e) => setShow(e.target.checked)}
-                  />
-                  Show password
-                </label>
+              <div className="flex items-center justify-end">
                 <Link
                   to="/login"
                   className="text-primary hover:underline text-sm"

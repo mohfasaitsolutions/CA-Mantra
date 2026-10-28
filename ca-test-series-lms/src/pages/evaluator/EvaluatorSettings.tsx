@@ -9,12 +9,12 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Sidebar from "@/components/Sidebar";
 import MobileSidebar from "@/components/MobileSidebar";
 import { useToast } from "@/hooks/use-toast";
 import apiClient from "@/lib/api/client";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const EvaluatorSettings = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -216,10 +216,9 @@ const EvaluatorSettings = () => {
           <form onSubmit={handlePasswordChange} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="currentPassword">Current Password</Label>
-              <Input
+              <PasswordInput
                 id="currentPassword"
                 name="currentPassword"
-                type="password"
                 value={passwordForm.currentPassword}
                 onChange={handleInputChange}
                 required
@@ -227,10 +226,9 @@ const EvaluatorSettings = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="newPassword">New Password</Label>
-              <Input
+              <PasswordInput
                 id="newPassword"
                 name="newPassword"
-                type="password"
                 value={passwordForm.newPassword}
                 onChange={handleInputChange}
                 required
@@ -241,10 +239,9 @@ const EvaluatorSettings = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Confirm New Password</Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
                 value={passwordForm.confirmPassword}
                 onChange={handleInputChange}
                 required

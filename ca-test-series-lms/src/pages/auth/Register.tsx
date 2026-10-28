@@ -24,6 +24,7 @@ import { useAuthStore } from "@/lib/store";
 import { FormSchemas, ToastManager } from "@/lib/validation";
 import { useEnhancedForm } from "@/hooks/useValidationNew";
 import { GRADIENT_COLORS } from "@/constants/colors";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const Register = () => {
   const {
@@ -239,8 +240,7 @@ const Register = () => {
                     <FormItem>
                       <FormLabel>Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
+                        <PasswordInput
                           placeholder="••••••••"
                           {...field}
                         />
@@ -257,8 +257,7 @@ const Register = () => {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
+                        <PasswordInput
                           placeholder="••••••••"
                           {...field}
                         />

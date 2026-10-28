@@ -17,6 +17,7 @@ import {
     Mail,
     PenTool,
     FolderOpen,
+    UploadCloud,
 } from "lucide-react";
 
 export const studentMenuItems = [
@@ -51,6 +52,11 @@ export const adminMenuItems = [
     { icon: FolderOpen, label: "Plans", path: "/admin/plans" },
     { icon: Users, label: "Students", path: "/admin/students" },
     { icon: UserCheck, label: "Evaluators", path: "/admin/evaluators" },
+    {
+        icon: UploadCloud,
+        label: "Course Uploaders",
+        path: "/admin/course-uploaders",
+    },
     {
         icon: Star,
         label: "Evaluator Feedbacks",

@@ -23,6 +23,11 @@ router.post('/', auth(), requireRoles(ROLES.ADMIN), [
   body('specializations.*').optional().isIn(SUBJECTS)
 ], ctrl.adminCreateUser);
 
-router.get('/', auth(), requireRoles(ROLES.ADMIN), ctrl.listUsers);
+router.get('/', auth(), requireRoles(ROLES.ADMIN), ctrl.listUsers); // supports ?role=&q=&active=
+
+// Staff management (admin only). Students are handled by /admin/students.
+router.patch('/:id/toggle', auth(), requireRoles(ROLES.ADMIN), ctrl.toggleStaffStatus);
+router.post('/:id/resend-verification', auth(), requireRoles(ROLES.ADMIN), ctrl.resendStaffVerification);
+router.post('/:id/resend-invite', auth(), requireRoles(ROLES.ADMIN), ctrl.resendStaffInvite);
 
 module.exports = router;

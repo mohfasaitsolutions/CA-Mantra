@@ -24,6 +24,7 @@ import {
   useFieldValidation,
   ValidationSchemas,
 } from "@/lib/validation";
+import { PasswordInput } from "@/components/ui/password-input";
 
 // Example: Simple login form with centralized validation
 export const ExampleLoginForm = () => {
@@ -72,8 +73,7 @@ export const ExampleLoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
+                <PasswordInput
                   placeholder="Enter password"
                   {...field}
                 />
@@ -102,8 +102,7 @@ export const ExamplePasswordField = () => {
   return (
     <div className="space-y-2">
       <label className="text-sm font-medium">Password</label>
-      <Input
-        type="password"
+      <PasswordInput
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Enter a strong password"

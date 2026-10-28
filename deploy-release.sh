@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploys the security/bug-fix release to production, following ca-test-series-lms/deploy.txt.
+# Deploys the security/bug-fix release + COURSE_UPLOADER role to production, following ca-test-series-lms/deploy.txt.
 # Run from this folder:  bash deploy-release.sh
 # Steps are ordered so nothing is changed until the server pre-checks and backup succeed.
 set -euo pipefail
@@ -10,11 +10,21 @@ HOST="ubuntu@ec2-13-201-166-25.ap-south-1.compute.amazonaws.com"
 SSH="ssh -i $KEY -o ConnectTimeout=15"
 BE=/home/ubuntu/ca-test-series-backend
 FILES=(
+  # d77ab22 - security hardening / bug fixes
   src/server.js
   src/config/index.js
   src/utils/token.js
   src/utils/seedUsers.js
   src/routes/paymentRoutes.js
+  # ba954ab - COURSE_UPLOADER role
+  src/constants/roles.js
+  src/controllers/adminController.js
+  src/controllers/testSeriesController.js
+  src/controllers/userController.js
+  src/routes/adminRoutes.js
+  src/routes/planRoutes.js
+  src/routes/testSeriesRoutes.js
+  src/routes/userRoutes.js
 )
 
 chmod 400 "$KEY"

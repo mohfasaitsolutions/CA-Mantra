@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { authApi } from "@/lib/api/auth";
 import { useToast } from "@/hooks/use-toast";
+import { PasswordInput } from "@/components/ui/password-input";
 
 // Two modes: request reset (email) OR reset (token + password)
 const requestSchema = z.object({
@@ -140,8 +141,7 @@ const ForgotPassword = () => {
                     <FormItem>
                       <FormLabel>New Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
+                        <PasswordInput
                           placeholder="New password"
                           {...field}
                         />
@@ -157,8 +157,7 @@ const ForgotPassword = () => {
                     <FormItem>
                       <FormLabel>Confirm Password</FormLabel>
                       <FormControl>
-                        <Input
-                          type="password"
+                        <PasswordInput
                           placeholder="Confirm password"
                           {...field}
                         />

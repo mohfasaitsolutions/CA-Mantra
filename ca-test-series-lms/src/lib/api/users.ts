@@ -39,6 +39,49 @@ export interface CreateUserPayload {
   role: 'ADMIN' | 'EVALUATOR' | 'COURSE_UPLOADER' | 'STUDENTS';
 }
 
+export interface StaffUser {
+  _id: string;
+  fullName: string;
+  email: string;
+  role: 'ADMIN' | 'EVALUATOR' | 'COURSE_UPLOADER' | 'STUDENTS';
+  caLevel?: string;
+  isActive: boolean;
+  emailVerified?: boolean;
+  createdAt?: string;
+}
+
+export type StaffSortField =
+  | 'fullName'
+  | 'email'
+  | 'role'
+  | 'isActive'
+  | 'emailVerified'
+  | 'createdAt';
+
+export interface ListStaffParams {
+  role?: string;
+  q?: string;
+  active?: boolean;
+  page?: number;
+  limit?: number;
+  sortBy?: StaffSortField;
+  sortDir?: 'asc' | 'desc';
+}
+
+export interface StaffPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasPrev: boolean;
+  hasNext: boolean;
+}
+
+export interface PaginatedStaff {
+  data: StaffUser[];
+  pagination: StaffPagination;
+}
+
 export interface PaginatedUsers<T = AuthUser> {
   data: T[];
   total?: number;
@@ -70,6 +113,48 @@ export const usersApi = {
   },
   listUsers: async (): Promise<PaginatedUsers> => {
     const { data } = await apiClient.get('/users');
+    return data;
+  },
+  // Staff listing. Filtering, sorting and paging all happen server-side; the
+  // page only ever renders what this returns.
+  listStaff: async (params: ListStaffParams = {}): Promise<PaginatedStaff> => {
+    const { data } = await apiClient.get('/users', {
+      params: {
+        role: params.role,
+        q: params.q || undefined,
+        active: params.active === undefined ? undefined : String(params.active),
+        page: params.page ?? 1,
+        limit: params.limit ?? 10,
+        sortBy: params.sortBy,
+        sortDir: params.sortDir,
+      },
+    });
+    // The endpoint returns a bare array when called without paging params.
+    if (Array.isArray(data)) {
+      return {
+        data,
+        pagination: {
+          page: 1,
+          limit: data.length,
+          total: data.length,
+          totalPages: 1,
+          hasPrev: false,
+          hasNext: false,
+        },
+      };
+    }
+    return data as PaginatedStaff;
+  },
+  toggleStaffStatus: async (id: string): Promise<{ id: string; isActive: boolean }> => {
+    const { data } = await apiClient.patch(`/users/${id}/toggle`);
+    return data;
+  },
+  resendStaffVerification: async (id: string): Promise<{ message: string }> => {
+    const { data } = await apiClient.post(`/users/${id}/resend-verification`);
+    return data;
+  },
+  resendStaffInvite: async (id: string): Promise<{ message: string }> => {
+    const { data } = await apiClient.post(`/users/${id}/resend-invite`);
     return data;
   },
   sendMobileOtp: async (): Promise<OtpResponse> => {

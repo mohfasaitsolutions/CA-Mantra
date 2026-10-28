@@ -48,6 +48,7 @@ import EditTestSeries from "./pages/admin/EditTestSeries";
 import StudentsManagement from "./pages/admin/StudentsManagement";
 import StudentDetail from "./pages/admin/StudentDetail";
 import EvaluatorsManagement from "./pages/admin/EvaluatorsManagement";
+import CourseUploadersManagement from "./pages/admin/CourseUploadersManagement";
 import EvaluatorDetail from "./pages/admin/EvaluatorDetail";
 import EvaluatorFeedbacks from "./pages/admin/EvaluatorFeedbacks";
 import EvaluationsManagement from "./pages/admin/EvaluationsManagement";
@@ -228,6 +229,10 @@ function AppRoutes() {
           <Route
             path="/admin/evaluators/:id"
             element={<EvaluatorDetail />}
+          />
+          <Route
+            path="/admin/course-uploaders"
+            element={<CourseUploadersManagement />}
           />
           <Route
             path="/admin/evaluator-feedbacks"

@@ -17,6 +17,7 @@ import { useState } from "react";
 import { FormSchemas, ToastManager } from "@/lib/validation";
 import { useEnhancedForm } from "@/hooks/useValidationNew";
 import { GRADIENT_COLORS } from "@/constants/colors";
+import { PasswordInput } from "@/components/ui/password-input";
 
 // Helper function to get role-based redirect path
 const getRoleBasedRedirect = (role?: string): string => {
@@ -230,7 +231,7 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••••" {...field} />
+                    <PasswordInput placeholder="••••••••" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

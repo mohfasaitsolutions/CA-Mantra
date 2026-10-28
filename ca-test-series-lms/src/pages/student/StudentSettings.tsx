@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import { Menu, Lock, Eye, EyeOff } from "lucide-react";
+import { Menu, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // Removed Language & Region select controls
 import apiClient from "@/lib/api/client";
@@ -16,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PasswordInput } from "@/components/ui/password-input";
 
 const StudentSettings = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
@@ -29,11 +29,6 @@ const StudentSettings = () => {
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
-  });
-  const [showPasswords, setShowPasswords] = useState({
-    current: false,
-    new: false,
-    confirm: false,
   });
   const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
 
@@ -87,13 +82,6 @@ const StudentSettings = () => {
     setPasswordData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
-
-  const togglePasswordVisibility = (field: "current" | "new" | "confirm") => {
-    setShowPasswords((prev) => ({
-      ...prev,
-      [field]: !prev[field],
     }));
   };
 
@@ -194,87 +182,45 @@ const StudentSettings = () => {
               <div className="space-y-2">
                 <Label htmlFor="currentPassword">Current Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type={showPasswords.current ? "text" : "password"}
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                  <PasswordInput
                     id="currentPassword"
                     name="currentPassword"
                     value={passwordData.currentPassword}
                     onChange={handlePasswordDataChange}
-                    className="pl-10 pr-10"
+                    className="pl-10"
                     required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => togglePasswordVisibility("current")}
-                  >
-                    {showPasswords.current ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="newPassword">New Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type={showPasswords.new ? "text" : "password"}
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                  <PasswordInput
                     id="newPassword"
                     name="newPassword"
                     value={passwordData.newPassword}
                     onChange={handlePasswordDataChange}
-                    className="pl-10 pr-10"
+                    className="pl-10"
                     required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => togglePasswordVisibility("new")}
-                  >
-                    {showPasswords.new ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="confirmPassword">Confirm New Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <Input
-                    type={showPasswords.confirm ? "text" : "password"}
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                  <PasswordInput
                     id="confirmPassword"
                     name="confirmPassword"
                     value={passwordData.confirmPassword}
                     onChange={handlePasswordDataChange}
-                    className="pl-10 pr-10"
+                    className="pl-10"
                     required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => togglePasswordVisibility("confirm")}
-                  >
-                    {showPasswords.confirm ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
                 </div>
               </div>
             </div>

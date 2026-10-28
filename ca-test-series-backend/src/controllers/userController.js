@@ -1,6 +1,6 @@
 const { validationResult } = require('express-validator');
 const crypto = require('crypto');
-const { sendSetPasswordEmail } = require('../services/emailService');
+const { sendSetPasswordEmail, sendVerificationEmail } = require('../services/emailService');
 const User = require('../models/User');
 const ROLES = require('../constants/roles');
 
@@ -72,9 +72,108 @@ exports.adminCreateUser = async (req,res) => {
   res.status(201).json({ id: user._id, email: user.email, role: user.role, specializations: user.specializations });
 };
 
+// Staff roles these admin endpoints may act on. Students are deliberately
+// excluded: they are managed through /admin/students, which has its own rules.
+const STAFF_ROLES = [ROLES.ADMIN, ROLES.EVALUATOR, ROLES.COURSE_UPLOADER];
+
+// Columns a client may sort by. Allow-listed so an arbitrary query value can
+// never reach the sort specification.
+const SORTABLE_FIELDS = ['fullName', 'email', 'role', 'isActive', 'emailVerified', 'createdAt'];
+
+// Escape user input before it becomes a RegExp, so characters like ( or * are
+// matched literally instead of changing the pattern or blowing up.
+const escapeRegex = (str) => String(str).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 exports.listUsers = async (req,res) => {
-  const users = await User.find().select('fullName email role caLevel createdAt specializations isActive');
-  res.json(users);
+  const { role, q, active, page, limit, sortBy, sortDir } = req.query;
+
+  const match = {};
+  if (role) {
+    const wanted = String(role).toUpperCase();
+    if (!Object.values(ROLES).includes(wanted)) return res.status(400).json({ message: 'Invalid role' });
+    match.role = wanted;
+  }
+  if (active === 'true') match.isActive = true;
+  if (active === 'false') match.isActive = false;
+  if (q) {
+    const rx = new RegExp(escapeRegex(String(q).trim()), 'i');
+    match.$or = [{ fullName: rx }, { email: rx }];
+  }
+
+  const sortField = SORTABLE_FIELDS.includes(sortBy) ? sortBy : 'createdAt';
+  const sortOrder = String(sortDir).toLowerCase() === 'asc' ? 1 : -1;
+  const sort = { [sortField]: sortOrder };
+  // Tie-break on _id so paging is stable when the sort column has duplicates.
+  if (sortField !== 'createdAt') sort._id = -1;
+
+  const projection = 'fullName email role caLevel createdAt specializations isActive emailVerified';
+  const query = User.find(match).select(projection).sort(sort);
+
+  // No paging params: return a plain array, as this endpoint always has.
+  if (page === undefined && limit === undefined) {
+    return res.json(await query);
+  }
+
+  const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+  const perPage = Math.min(Math.max(parseInt(limit, 10) || 10, 1), 100);
+
+  const [data, total] = await Promise.all([
+    query.skip((pageNum - 1) * perPage).limit(perPage),
+    User.countDocuments(match)
+  ]);
+  const totalPages = Math.max(Math.ceil(total / perPage), 1);
+
+  res.json({
+    data,
+    pagination: {
+      page: pageNum,
+      limit: perPage,
+      total,
+      totalPages,
+      hasPrev: pageNum > 1,
+      hasNext: pageNum < totalPages
+    }
+  });
+};
+
+// Admin: activate/deactivate a staff user
+exports.toggleStaffStatus = async (req,res) => {
+  const { id } = req.params;
+  if (String(id) === String(req.user.id)) {
+    return res.status(400).json({ message: 'You cannot change your own status' });
+  }
+  const user = await User.findOne({ _id: id, role: { $in: STAFF_ROLES } });
+  if (!user) return res.status(404).json({ message: 'Staff user not found' });
+  user.isActive = !user.isActive;
+  await user.save();
+  res.json({ id: user._id, isActive: user.isActive });
+};
+
+// Admin: resend the email-verification link to a staff user
+exports.resendStaffVerification = async (req,res) => {
+  const { id } = req.params;
+  const user = await User.findOne({ _id: id, role: { $in: STAFF_ROLES } });
+  if (!user) return res.status(404).json({ message: 'Staff user not found' });
+  if (user.emailVerified) return res.json({ message: 'Already verified' });
+  const token = crypto.randomBytes(32).toString('hex');
+  user.emailVerificationToken = token;
+  user.emailVerificationExpires = new Date(Date.now() + 1000 * 60 * 60 * 24);
+  await user.save();
+  sendVerificationEmail(user, token).catch(console.error);
+  res.json({ message: 'Verification email resent' });
+};
+
+// Admin: resend the set-password invite to a staff user
+exports.resendStaffInvite = async (req,res) => {
+  const { id } = req.params;
+  const user = await User.findOne({ _id: id, role: { $in: STAFF_ROLES } });
+  if (!user) return res.status(404).json({ message: 'Staff user not found' });
+  const token = crypto.randomBytes(32).toString('hex');
+  user.resetPasswordToken = token;
+  user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 60);
+  await user.save();
+  sendSetPasswordEmail(user, token).catch(console.error);
+  res.json({ message: 'Invite resent' });
 };
 
 // Upload profile picture for any user
